@@ -28,3 +28,9 @@ jobs:
         run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u $ --password-stdin
       - name: docker push
         run: VERSION=latest make docker-push
+      # push chart to OCI registry
+      - name: make chart
+        # always use latest image tag
+        run: IMAGE_TAG=latest make gen-chart
+      - name: push chart 
+        run: helm push out/charts/cluster-operator-0.3-dev.tgz oci://ghcr.io/kurator-charts
